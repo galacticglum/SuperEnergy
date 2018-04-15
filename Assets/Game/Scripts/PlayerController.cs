@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
 
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
     }
 
     private void FixedUpdate()
@@ -36,21 +37,20 @@ public class PlayerController : MonoBehaviour
         float horizontalAxis = Input.GetAxisRaw("Horizontal");
         float verticalAxis = Input.GetAxisRaw("Vertical");
 
+        float moveValue;
         if (horizontalAxis == 0 && verticalAxis == 0)
         {
-            animator.SetFloat("Move", 0);
-            legsAnimator.SetFloat("Move", 0);
-
+            moveValue = 0;
             velocity = Vector3.zero;
         }
         else
         {
-            animator.SetFloat("Move", 1);
-            legsAnimator.SetFloat("Move", 1);
-
+            moveValue = 1;
             velocity = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0).normalized * speed;
         }
 
+        animator.SetFloat("Move", moveValue);
+        legsAnimator.SetFloat("Move", moveValue);
         rigidbody2D.velocity = velocity;
     }
 }
