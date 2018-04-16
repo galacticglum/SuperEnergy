@@ -4,7 +4,9 @@
 public class CameraController : MonoBehaviour
 {
     [SerializeField]
-    private Vector2 smoothening;
+    private CursorController cursorController;
+    [SerializeField]
+    private float smoothTime = 0.2f;
     [SerializeField]
     private float lookaheadDistance = 7;
     [SerializeField]
@@ -14,7 +16,7 @@ public class CameraController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector2 direction = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - target.position).normalized;
+        Vector2 direction = (cursorController.transform.position - target.position).normalized * 0.8f;
 
         float offset = 0;
         if (Input.GetKey(KeyCode.LeftShift))
@@ -22,10 +24,9 @@ public class CameraController : MonoBehaviour
             offset = lookaheadDistance;
         }
 
-        Vector2 targetOffset = target.position + target.right * offset;
-        Vector2 position = Vector3.SmoothDamp(transform.position, targetOffset + direction, ref velocity, smoothening.x);
+        Vector2 targetOffset = target.position + target.up * 0.5f * offset;
+        Vector2 position = Vector3.SmoothDamp(transform.position, targetOffset + direction, ref velocity, smoothTime);
 
         transform.position = new Vector3(position.x, position.y, transform.position.z);
-        //transform.position = new Vector3(target.transform.position.x, target.transform.position.y, transform.position.z);
     }
 }

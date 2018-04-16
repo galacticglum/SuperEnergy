@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(Animator))]
 public class PlayerController : MonoBehaviour
 {
     [Header("Locomotion Settings")]
@@ -10,26 +9,20 @@ public class PlayerController : MonoBehaviour
 
     [Header("Animation")]
     [SerializeField]
+    private Animator animator;
+    [SerializeField]
     private Animator legsAnimator;
+
+    [Header("Cursor")]
+    [SerializeField]
+    private CursorController cursorController;
 
     private Vector3 velocity;
     private new Rigidbody2D rigidbody2D;
-    private Animator animator;
 
     private void Start()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-    }
-
-    private void Update()
-    {
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        Vector3 direction = mousePosition - transform.position;
-
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-
     }
 
     private void FixedUpdate()
