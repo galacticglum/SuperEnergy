@@ -5,6 +5,7 @@ public class CursorController : MonoBehaviour
     [SerializeField]
     private PlayerController playerController;
 
+    [Range(0,1)]
     [SerializeField]
     private float mouseSensitivity = 0.5f;
     [SerializeField]
@@ -15,85 +16,36 @@ public class CursorController : MonoBehaviour
 
     private CursorLockMode currentCursorLockMode;
 
-    private bool doSmooth;
-    private Vector3 smoothDesintation;
-    private Vector3 smoothVelocity;
-
     private void Start()
     {
         Cursor.visible = false;
+        LockCursor();
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if (currentCursorLockMode == CursorLockMode.None)
-            {
-                currentCursorLockMode = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
-            else if (currentCursorLockMode == CursorLockMode.Locked)
-            {
-                currentCursorLockMode = CursorLockMode.None;
-                Cursor.visible = true;
-            }
-
-            Cursor.lockState = currentCursorLockMode;
+            LockCursor();
         }
 
         transform.Rotate(0, 0, rotationSpeed * Time.deltaTime);
 
-        //if (doSmooth)
-        //{
-        //    transform.position = Vector3.SmoothDamp(transform.position, smoothDesintation, ref smoothVelocity, 0.2f);
-
-        //    Vector3 difference = transform.position - smoothDesintation;
-        //    if (difference.sqrMagnitude < 0.001f)
-        //    {
-        //        doSmooth = false;
-        //    }
-
-        //    return;
-        //}
-
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
 
-        bool previousSmoothState = doSmooth;
-        Vector2 offset = new Vector2(0f, 0f);
-
-        if (Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            offset = playerController.transform.up.normalized * 3f;
-            doSmooth = true;
-        }
-        else if (Input.GetKeyUp(KeyCode.LeftShift))
-        {
-            if (Vector2.Distance(playerController.transform.position, transform.position) > 4f)
-            {
-                offset = playerController.transform.up.normalized * -3f;
-                doSmooth = true;
-            }
-        }
 
         float screenAspect = Screen.width / (float)Screen.height;
         float cameraHeight = Camera.main.orthographicSize * 2;
         Bounds bounds = new Bounds(Camera.main.transform.position, new Vector3(cameraHeight * screenAspect, cameraHeight, 0));
 
-        bonusX += mouseX + offset.x;
-        bonusY += mouseY + offset.y;
+        bonusX += mouseX;
+        bonusY += mouseY;
 
         Vector3 position = playerController.transform.position + new Vector3(bonusX, bonusY, 0f);
         position.x = Mathf.Clamp(position.x, bounds.min.x, bounds.max.x);
         position.y = Mathf.Clamp(position.y, bounds.min.y, bounds.max.y);
         position.z = playerController.transform.position.z;
-
-        //if (!previousSmoothState && doSmooth)
-        //{
-        //    smoothDesintation = position;
-        //    return;
-        //}
 
         transform.position = position;
 
@@ -104,5 +56,21 @@ public class CursorController : MonoBehaviour
         rotation.y = 0;
 
         playerController.transform.rotation = rotation;
+    }
+
+    private void LockCursor()
+    {
+        if (currentCursorLockMode == CursorLockMode.None)
+        {
+            currentCursorLockMode = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else if (currentCursorLockMode == CursorLockMode.Locked)
+        {
+            currentCursorLockMode = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+
+        Cursor.lockState = currentCursorLockMode;
     }
 }
