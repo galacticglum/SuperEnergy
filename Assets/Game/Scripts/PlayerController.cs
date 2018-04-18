@@ -57,6 +57,7 @@ public class PlayerController : MonoBehaviour
         {
             moveValue = 0;
             velocity = Vector3.zero;
+            rigidbody2D.angularVelocity = 0;
         }
         else
         {
@@ -72,7 +73,6 @@ public class PlayerController : MonoBehaviour
     private void FireProjectile()
     {
         if (Time.time <= fireRate + timeSinceLastFire) return;
-
         Vector3 projectileVelocity = nozzleMarker.right * projectileSpeed;
 
         Vector3 direction = cursorController.transform.position - transform.position;
