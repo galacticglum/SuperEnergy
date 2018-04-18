@@ -31,8 +31,14 @@ public class ProjectileInstance : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (!other.gameObject.CompareTag("Obstacle")) return;
+        if (!other.gameObject.CompareTag("Obstacle") && !other.gameObject.CompareTag("Enemy")) return;
         rigidbody2D.velocity = Vector2.zero;
+
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            other.gameObject.GetComponent<Enemy>().TakeDamage(PlayerController.WeaponDamage);
+        }
+
         Destroy(gameObject);
     }
 

@@ -3,6 +3,8 @@
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
+    public const float WeaponDamage = 20;
+
     public bool CanShoot { get; set; }
 
     [Header("Locomotion Settings")]

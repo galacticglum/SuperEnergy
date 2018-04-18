@@ -36,7 +36,7 @@ public class Socket : MonoBehaviour
         }
         else
         {
-            if (!(distance <= 1)) return;
+            if (!(distance <= 2)) return;
 
             playerController.CanShoot = true;
             pluggedIn = true;
