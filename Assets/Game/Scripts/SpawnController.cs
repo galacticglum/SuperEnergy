@@ -1,5 +1,14 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
+[Serializable]
+public struct SpawnPoint
+{
+    public Transform Transform;
+    public float Weight;
+}
 
 public class SpawnController : MonoBehaviour
 {
@@ -8,41 +17,60 @@ public class SpawnController : MonoBehaviour
     [SerializeField]
     private GameObject[] spawnObjects;
     [SerializeField]
-    private float spawnRadius = 20;
+    private SpawnPoint[] spawnPoints;
+    [SerializeField]
+    private float timeBetweenWave = 3;
 
     private GameObject spawnParent;
+    private int currentWaveSize;
+    private bool isCurrentlyWave;
 
-    private int currentWaveSize = 1;
-
-    [SerializeField]
-    private float timeUntilNextSpawn = 1.0f;
+    private float timeUntilNextWave;
+    private float timeUntilNextSpawn = 1;
 
     private void Start()
     {
         spawnParent = new GameObject("Spawn_Parent");
+        timeUntilNextWave = timeBetweenWave;
     }
 
     private void Update()
     {
+        int enemyAliveCount = FindObjectsOfType<Enemy>().Length;
+        if (enemyAliveCount == 0 && currentWaveSize == 0)
+        {
+            if (isCurrentlyWave)
+            {
+                Debug.Log("Wave ended");
+                timeUntilNextWave = timeBetweenWave;
+                isCurrentlyWave = false;
+            }
+
+            timeUntilNextWave -= Time.deltaTime;
+            if (timeUntilNextWave > 0) return;
+
+            currentWaveSize = Random.Range(GetNewMinWave(), GetNewMaxWave());
+            isCurrentlyWave = true;
+            Debug.Log("Wave started");
+        }
+
+        if (!isCurrentlyWave || currentWaveSize == 0) return;
+
         timeUntilNextSpawn -= Time.deltaTime;
-        if (timeUntilNextSpawn > 0.0f)
+        if (timeUntilNextSpawn > 0)
         {
             return;
         }
 
         int objectIndex = GetRandomSpawnObject();
+        int locationIndex = GetRandomSpawnLocation();
 
-        Vector3 offset = Random.onUnitSphere;
-        offset.z = 0;
-        offset = offset.normalized * spawnRadius;
-
-        GameObject enemyGameObject = Enemy.Create(spawnObjects[objectIndex], transform.position + offset, playerController);
+        GameObject enemyGameObject = Enemy.Create(spawnObjects[objectIndex], spawnPoints[locationIndex].Transform.position, playerController);
         enemyGameObject.transform.SetParent(spawnParent.transform);
 
         --currentWaveSize;
 
         timeUntilNextSpawn = Random.Range(GetNewMinTime(), GetNewMaxTime());
-        currentWaveSize = Random.Range(GetNewMinWave(), GetNewMaxWave());
     }
 
     private static int GetRandomWeightedIndex(float[] weights)
@@ -148,5 +176,16 @@ public class SpawnController : MonoBehaviour
         }
 
         return Time.time < 30.0f ? 8 : 12;
+    }
+
+    private int GetRandomSpawnLocation()
+    {
+        float[] locationWeights = new float[spawnPoints.Length];
+        for (int i = 0; i < spawnPoints.Length; i++)
+        {
+            locationWeights[i] = spawnPoints[i].Weight;
+        }
+
+        return Mathf.Clamp(GetRandomWeightedIndex(locationWeights), 0, spawnPoints.Length - 1);
     }
 }
