@@ -15,11 +15,11 @@ TagManager:
   - UI
   - 
   - 
-  - Tilemap
+  - LightObstacles
   - Enemy
   - Bullet
-  - 
-  - 
+  - LightSources
+  - AmbientLight
   - 
   - 
   - 
