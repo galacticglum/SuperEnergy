@@ -1,5 +1,4 @@
-﻿using System;
-using Pathfinding;
+﻿using Pathfinding;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
@@ -7,6 +6,7 @@ public class Enemy : MonoBehaviour
 {
     private const float Speed = 2;
     private const float MaxWaypointDistance = 2;
+    private const float MinimumEngagementDistance = 10;
 
     private static readonly Color HurtColourTint = new Color(1, 0.55f, 0.55f);
 
@@ -18,6 +18,8 @@ public class Enemy : MonoBehaviour
     private AIPath aiPath;
     private Seeker seeker;
     private int currentWaypoint;
+
+    private Vector2 previousPlayerPosition;
 
     private void Start()
     {
@@ -33,6 +35,17 @@ public class Enemy : MonoBehaviour
         aiPath.rotationIn2D = true;
         aiPath.gravity = Vector3.zero;
         aiPath.updateRotation = false;
+
+        SetupDestinationPosition();
+    }
+
+    private void SetupDestinationPosition()
+    {
+        float distance = Vector2.Distance(transform.position, playerController.transform.position);
+        if (distance <= MinimumEngagementDistance) return;
+
+        float targetDistance = distance * Random.Range(0.4f, 0.6f);
+        aiPath.destination = RandomPositionWithinDistance(targetDistance);
     }
 
     private void Update()
@@ -41,22 +54,21 @@ public class Enemy : MonoBehaviour
         {
             spriteRenderer.color = Color.white;
         }
+
+        if (aiPath.reachedEndOfPath)
+        {
+            SetupDestinationPosition();
+        }
     }
 
     private void FixedUpdate()
     {
-        if (playerController.IsCombatCircleFull && !playerController.IsEnemyInCombatCircle(this))
-        {
-            return;
-        }
+        HandleRotation();
+        HandleMovement();
+    }
 
-        if (!playerController.IsCombatCircleFull && !playerController.IsEnemyInCombatCircle(this))
-        {
-            playerController.AddEnemyToCombatCircle(this);
-        }
-
-        aiPath.destination = playerController.GetPositionInCombatCircle(this);
-
+    private void HandleRotation()
+    {
         Path currentPath = seeker.GetCurrentPath();
         if (currentPath == null) return;
         if (currentWaypoint >= currentPath.vectorPath.Count)
@@ -71,6 +83,50 @@ public class Enemy : MonoBehaviour
         {
             currentWaypoint++;
         }
+    }
+
+    private void HandleMovement()
+    {
+        float distance = Vector2.Distance(transform.position, playerController.transform.position);
+
+        if (distance > MinimumEngagementDistance) return;
+        if (playerController.IsCombatCircleFull && !playerController.IsEnemyInCombatCircle(this))
+        {
+            if (!aiPath.reachedEndOfPath) return;
+
+            GridGraph graph = (GridGraph)AstarPath.active.graphs[0];
+            Bounds graphBounds = new Bounds(AstarPath.active.transform.position, new Vector3(graph.Width, graph.Depth));
+
+            Vector2 position = Vector2.zero;
+            for (int i = 0; i < 20; i++)
+            {
+                float targetDistance = distance * Random.Range(1f, 1.4f);
+                position = RandomPositionWithinDistance(targetDistance);
+                if (graphBounds.Contains(position)) break;
+            }
+
+            aiPath.destination = position;
+            return;
+        }
+
+        if (!playerController.IsCombatCircleFull && !playerController.IsEnemyInCombatCircle(this))
+        {
+            playerController.AddEnemyToCombatCircle(this);
+            RecalculateCombatCirclePosition();
+        }
+
+        if (Vector2.Distance(previousPlayerPosition, playerController.transform.position) > 1)
+        {
+            RecalculateCombatCirclePosition();
+        }
+    }
+
+    private static Vector2 RandomPositionWithinDistance(float distance) => Random.onUnitSphere * distance;
+
+    private void RecalculateCombatCirclePosition()
+    {
+        aiPath.destination = playerController.GetPositionInCombatCircle(this);
+        previousPlayerPosition = playerController.transform.position;
     }
 
     private void RotateTo(Vector3 target)
@@ -101,5 +157,4 @@ public class Enemy : MonoBehaviour
 
         return enemyGameObject;
     }
-
 }

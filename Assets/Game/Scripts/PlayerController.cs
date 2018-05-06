@@ -52,6 +52,8 @@ public class PlayerController : MonoBehaviour
 
     private Enemy[] combatCircleEnemies;
 
+    private float FuzzyCombatCircleRadius => Random.Range(0.9f, 1.6f) * combatCircleRadius;
+
     private void Start()
     {
         combatCircleEnemies = new Enemy[8];
@@ -150,41 +152,43 @@ public class PlayerController : MonoBehaviour
         {
             // North
             case 0:
-                relativeCirclePosition = UnitCirleNorth * combatCircleRadius;
+                relativeCirclePosition = UnitCirleNorth;
                 break;
             // Northeast
             case 1:
-                relativeCirclePosition = UnitCircleNortheast * combatCircleRadius;
+                relativeCirclePosition = UnitCircleNortheast;
                 break;
             // East
             case 2:
-                relativeCirclePosition = UnitCircleEast * combatCircleRadius;
+                relativeCirclePosition = UnitCircleEast;
                 break;
             // Southeast
             case 3:
-                relativeCirclePosition = UnitCircleSoutheast * combatCircleRadius;
+                relativeCirclePosition = UnitCircleSoutheast;
                 break;
             // South
             case 4:
-                relativeCirclePosition = UnitCircleSouth * combatCircleRadius;
+                relativeCirclePosition = UnitCircleSouth;
                 break;
             // Southwest
             case 5:
-                relativeCirclePosition = UnitCircleSouthwest * combatCircleRadius;
+                relativeCirclePosition = UnitCircleSouthwest;
                 break;
             // West
             case 6:
-                relativeCirclePosition = UnitCircleWest * combatCircleRadius;
+                relativeCirclePosition = UnitCircleWest;
                 break;
             // Northwest
             case 7:
-                relativeCirclePosition = UnitCircleNorthwest * combatCircleRadius;
+                relativeCirclePosition = UnitCircleNorthwest;
                 break;
             default:
                 throw new Exception("Enemy does not exist in the combat circle!");
         }
 
+        relativeCirclePosition *= FuzzyCombatCircleRadius;
         relativeCirclePosition += new Vector2(transform.position.x, transform.position.y);
+
         return relativeCirclePosition;
     }
 }
