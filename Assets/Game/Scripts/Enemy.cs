@@ -4,6 +4,8 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class Enemy : MonoBehaviour
 {
+    public bool IsAttacking { get; set; }
+    public float AttackWaitTime { get; set; }
     public float Damage => damage;
 
     [SerializeField]
@@ -149,6 +151,11 @@ public class Enemy : MonoBehaviour
         if (health <= 0)
         {
             playerController.RemoveEnemyFromCombatCircle(this);
+            if (IsAttacking)
+            {
+                StopCoroutine(playerController.EnemyAttack(this, AttackWaitTime));
+            }
+
             Destroy(gameObject);
         }
 

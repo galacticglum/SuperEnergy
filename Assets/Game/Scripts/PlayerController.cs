@@ -70,7 +70,7 @@ public class PlayerController : MonoBehaviour
         rigidbody2D = GetComponent<Rigidbody2D>();
         CanShoot = false;
 
-        InvokeRepeating(nameof(HandleEnemyAttack), 0, 2);
+        InvokeRepeating(nameof(HandleEnemyAttack), 0, 1.5f);
     }
 
     private void Update()
@@ -98,10 +98,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private IEnumerator EnemyAttack(Enemy enemy, float waitTime)
+    public IEnumerator EnemyAttack(Enemy enemy, float waitTime)
     {
         yield return new WaitForSeconds(waitTime);
-
         const float transitionTime = 0.1f;
 
         if (enemy == null)
@@ -109,8 +108,11 @@ public class PlayerController : MonoBehaviour
             yield break;
         }
 
+        enemy.IsAttacking = true;
+        enemy.AttackWaitTime = waitTime;
+
         Vector2 originalPosition = enemy.transform.position;
-        Vector2 newPosition = originalPosition + (Vector2)(transform.position - enemy.transform.position) * 0.8f;
+        Vector2 newPosition = originalPosition + (Vector2)(transform.position - enemy.transform.position) * 0.5f;
         float elapsedTime = 0;
 
         while (elapsedTime < transitionTime)
@@ -128,6 +130,8 @@ public class PlayerController : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
+
+        enemy.IsAttacking = false;
     }
 
     private void TakeDamage(float amount)
