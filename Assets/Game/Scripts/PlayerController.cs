@@ -110,7 +110,7 @@ public class PlayerController : MonoBehaviour
         }
 
         Vector2 originalPosition = enemy.transform.position;
-        Vector2 newPosition = (transform.position - enemy.transform.position) * 0.8f;
+        Vector2 newPosition = originalPosition + (Vector2)(transform.position - enemy.transform.position) * 0.8f;
         float elapsedTime = 0;
 
         while (elapsedTime < transitionTime)
