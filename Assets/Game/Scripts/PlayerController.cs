@@ -103,7 +103,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
         const float transitionTime = 0.1f;
 
-        if (enemy == null)
+        if (enemy == null || enemy.CurrentHealth == 0)
         {
             yield break;
         }

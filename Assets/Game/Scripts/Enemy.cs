@@ -4,6 +4,9 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class Enemy : MonoBehaviour
 {
+    public float MaxHealth => maxHealth;
+    public float CurrentHealth { get; private set; }
+
     public bool IsAttacking { get; set; }
     public float AttackWaitTime { get; set; }
     public float Damage => damage;
@@ -16,10 +19,13 @@ public class Enemy : MonoBehaviour
     private float minimumEngagementDistance = 10;
     [SerializeField]
     private float damage = 10;
+    [SerializeField]
+    private float maxHealth = 100;
+    [SerializeField]
+    private EnemyHealthBar healthBar;
 
     private static readonly Color HurtColourTint = new Color(1, 0.55f, 0.55f);
 
-    private float health = 100;
     private SpriteRenderer spriteRenderer;
     private PlayerController playerController;
     private float lastTakeDamageTime;
@@ -32,6 +38,10 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
+        healthBar.Initialize(this);
+
+        CurrentHealth = maxHealth;
+
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.sortingLayerName = "Player";
         spriteRenderer.sortingOrder = 1;
@@ -87,7 +97,6 @@ public class Enemy : MonoBehaviour
         }
 
         RotateTo(currentPath.vectorPath[currentWaypoint]);
-
         if (Vector3.Distance(transform.position, currentPath.vectorPath[currentWaypoint]) < maxWaypointDistance)
         {
             currentWaypoint++;
@@ -147,8 +156,8 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        health -= damage;
-        if (health <= 0)
+        CurrentHealth -= damage;
+        if (CurrentHealth <= 0)
         {
             playerController.RemoveEnemyFromCombatCircle(this);
             if (IsAttacking)
