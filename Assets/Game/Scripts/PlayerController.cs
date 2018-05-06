@@ -70,7 +70,7 @@ public class PlayerController : MonoBehaviour
         rigidbody2D = GetComponent<Rigidbody2D>();
         CanShoot = false;
 
-        InvokeRepeating(nameof(HandleEnemyAttack), 0, 1);
+        InvokeRepeating(nameof(HandleEnemyAttack), 0, 2);
     }
 
     private void Update()
