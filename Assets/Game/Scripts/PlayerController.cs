@@ -185,6 +185,9 @@ public class PlayerController : MonoBehaviour
         animator.SetTrigger("Shoot");
     }
 
+    private float GetDistanceFromSlot(Vector2 position, int slot) => Vector2.Distance(position, 
+        (GetSlotUnitCirclePosition(slot) + new Vector2(transform.position.x, transform.position.y)) * 1.6f);
+
     public void AddEnemyToCombatCircle(Enemy enemy)
     {
         List<int> availableSlots = new List<int>();
@@ -196,7 +199,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        int slotIndex = availableSlots[Random.Range(0, availableSlots.Count)];
+        int slotIndex = availableSlots.OrderBy(slot => GetDistanceFromSlot(enemy.transform.position, slot)).First();
         combatCircleEnemies[slotIndex] = enemy;
     }
 
@@ -215,6 +218,39 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private static Vector2 GetSlotUnitCirclePosition(int slot)
+    {
+        switch (slot)
+        {
+            // North
+            case 0:
+                return UnitCirleNorth;
+            // Northeast
+            case 1:
+                return UnitCircleNortheast;
+            // East
+            case 2:
+                return UnitCircleEast;
+            // Southeast
+            case 3:
+                return UnitCircleSoutheast;
+            // South
+            case 4:
+                return UnitCircleSouth;
+            // Southwest
+            case 5:
+                return UnitCircleSouthwest;
+            // West
+            case 6:
+                return UnitCircleWest;
+            // Northwest
+            case 7:
+                return UnitCircleNorthwest;
+            default:
+                throw new Exception("Slot does not exist in the combat circle!");
+        }
+    }
+
     public Vector2 GetPositionInCombatCircle(Enemy enemy)
     {
         int indexOfEnemy = -1;
@@ -226,45 +262,7 @@ public class PlayerController : MonoBehaviour
             break;
         }
 
-        Vector2 relativeCirclePosition;
-        switch (indexOfEnemy)
-        {
-            // North
-            case 0:
-                relativeCirclePosition = UnitCirleNorth;
-                break;
-            // Northeast
-            case 1:
-                relativeCirclePosition = UnitCircleNortheast;
-                break;
-            // East
-            case 2:
-                relativeCirclePosition = UnitCircleEast;
-                break;
-            // Southeast
-            case 3:
-                relativeCirclePosition = UnitCircleSoutheast;
-                break;
-            // South
-            case 4:
-                relativeCirclePosition = UnitCircleSouth;
-                break;
-            // Southwest
-            case 5:
-                relativeCirclePosition = UnitCircleSouthwest;
-                break;
-            // West
-            case 6:
-                relativeCirclePosition = UnitCircleWest;
-                break;
-            // Northwest
-            case 7:
-                relativeCirclePosition = UnitCircleNorthwest;
-                break;
-            default:
-                throw new Exception("Enemy does not exist in the combat circle!");
-        }
-
+        Vector2 relativeCirclePosition = GetSlotUnitCirclePosition(indexOfEnemy);
         relativeCirclePosition *= FuzzyCombatCircleRadius;
         relativeCirclePosition += new Vector2(transform.position.x, transform.position.y);
 
