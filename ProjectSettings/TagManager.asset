@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Obstacle
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -13,7 +15,7 @@ TagManager:
   - UI
   - 
   - 
-  - 
+  - Tilemap
   - 
   - 
   - 
@@ -47,9 +49,15 @@ TagManager:
   - name: Player_Legs
     uniqueID: 4269195207
     locked: 0
+  - name: Projectile
+    uniqueID: 1273092145
+    locked: 0
   - name: Player
     uniqueID: 4184900177
     locked: 0
   - name: Cursor
     uniqueID: 3561806887
+    locked: 0
+  - name: UI
+    uniqueID: 4054714225
     locked: 0
