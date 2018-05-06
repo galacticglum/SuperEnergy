@@ -2715,12 +2715,14 @@ MonoBehaviour:
   animator: {fileID: 25950257}
   legsAnimator: {fileID: 1238006360}
   cursorController: {fileID: 1196400265}
+  maxHealth: 100
   fireRate: 0.5
   projectileSpeed: 15
   nozzleMarker: {fileID: 174993202}
   projectilePrefab: {fileID: 1134339338414476, guid: 937c1c816472e764794ec2b5a922f281,
     type: 2}
   combatCircleRadius: 2
+  spriteRenderer: {fileID: 25950256}
 --- !u!1001 &1159582313
 Prefab:
   m_ObjectHideFlags: 0
@@ -12975,4 +12977,4 @@ MonoBehaviour:
     Weight: 1
   - Transform: {fileID: 865290145}
     Weight: 0.5
-  timeUntilNextSpawn: 5
+  timeBetweenWave: 3

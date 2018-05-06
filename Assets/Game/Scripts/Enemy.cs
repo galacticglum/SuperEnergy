@@ -4,9 +4,16 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class Enemy : MonoBehaviour
 {
-    private const float Speed = 2;
-    private const float MaxWaypointDistance = 2;
-    private const float MinimumEngagementDistance = 10;
+    public float Damage => damage;
+
+    [SerializeField]
+    private float speed = 2;
+    [SerializeField]
+    private float maxWaypointDistance = 2;
+    [SerializeField]
+    private float minimumEngagementDistance = 10;
+    [SerializeField]
+    private float damage = 10;
 
     private static readonly Color HurtColourTint = new Color(1, 0.55f, 0.55f);
 
@@ -31,7 +38,7 @@ public class Enemy : MonoBehaviour
         seeker = GetComponent<Seeker>();
 
         aiPath.whenCloseToDestination = CloseToDestinationMode.Stop;
-        aiPath.maxSpeed = Speed;
+        aiPath.maxSpeed = speed;
         aiPath.rotationIn2D = true;
         aiPath.gravity = Vector3.zero;
         aiPath.updateRotation = false;
@@ -42,7 +49,7 @@ public class Enemy : MonoBehaviour
     private void SetupDestinationPosition()
     {
         float distance = Vector2.Distance(transform.position, playerController.transform.position);
-        if (distance <= MinimumEngagementDistance) return;
+        if (distance <= minimumEngagementDistance) return;
 
         float targetDistance = distance * Random.Range(0.4f, 0.6f);
         aiPath.destination = RandomPositionWithinDistance(targetDistance);
@@ -79,7 +86,7 @@ public class Enemy : MonoBehaviour
 
         RotateTo(currentPath.vectorPath[currentWaypoint]);
 
-        if (Vector3.Distance(transform.position, currentPath.vectorPath[currentWaypoint]) < MaxWaypointDistance)
+        if (Vector3.Distance(transform.position, currentPath.vectorPath[currentWaypoint]) < maxWaypointDistance)
         {
             currentWaypoint++;
         }
@@ -89,7 +96,7 @@ public class Enemy : MonoBehaviour
     {
         float distance = Vector2.Distance(transform.position, playerController.transform.position);
 
-        if (distance > MinimumEngagementDistance) return;
+        if (distance > minimumEngagementDistance) return;
         if (playerController.IsCombatCircleFull && !playerController.IsEnemyInCombatCircle(this))
         {
             if (!aiPath.reachedEndOfPath) return;
@@ -152,7 +159,7 @@ public class Enemy : MonoBehaviour
     public static GameObject Create(GameObject prefab, Vector3 position, PlayerController playerController)
     {
         GameObject enemyGameObject = Instantiate(prefab, position, Quaternion.identity);
-        Enemy enemyInstance = enemyGameObject.AddComponent<Enemy>();
+        Enemy enemyInstance = enemyGameObject.GetComponent<Enemy>();
         enemyInstance.playerController = playerController;
 
         return enemyGameObject;
