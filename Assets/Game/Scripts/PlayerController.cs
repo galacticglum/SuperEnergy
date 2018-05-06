@@ -1,9 +1,22 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
     public const float WeaponDamage = 20;
+
+    private static readonly Vector2 UnitCirleNorth = new Vector2(0, 1);
+    private static readonly Vector2 UnitCircleNortheast = new Vector2(0.707106781f, 0.707106781f);
+    private static readonly Vector2 UnitCircleEast = new Vector2(1, 0);
+    private static readonly Vector2 UnitCircleSoutheast = new Vector2(0.707106781f, -0.707106781f);
+    private static readonly Vector2 UnitCircleSouth = new Vector2(0, -1);
+    private static readonly Vector2 UnitCircleSouthwest = new Vector2(-0.707106781f, -0.707106781f);
+    private static readonly Vector2 UnitCircleWest = new Vector2(-1, 0);
+    private static readonly Vector2 UnitCircleNorthwest = new Vector2(-0.707106781f, 0.707106781f);
 
     public bool CanShoot { get; set; }
 
@@ -30,13 +43,18 @@ public class PlayerController : MonoBehaviour
     private Transform nozzleMarker;
     [SerializeField]
     private GameObject projectilePrefab;
+    [SerializeField]
+    private float combatCircleRadius = 2;
 
     private float timeSinceLastFire;
     private Vector3 velocity;
     private new Rigidbody2D rigidbody2D;
 
+    private Enemy[] combatCircleEnemies;
+
     private void Start()
     {
+        combatCircleEnemies = new Enemy[8];
         rigidbody2D = GetComponent<Rigidbody2D>();
         CanShoot = false;
     }
@@ -85,5 +103,88 @@ public class PlayerController : MonoBehaviour
 
         timeSinceLastFire = Time.time;
         animator.SetTrigger("Shoot");
+    }
+
+    public void AddEnemyToCombatCircle(Enemy enemy)
+    {
+        List<int> availableSlots = new List<int>();
+        for (int i = 0; i < combatCircleEnemies.Length; i++)
+        {
+            if (combatCircleEnemies[i] == null)
+            {
+                availableSlots.Add(i);
+            }
+        }
+
+        int slotIndex = availableSlots[Random.Range(0, availableSlots.Count)];
+        combatCircleEnemies[slotIndex] = enemy;
+    }
+
+    public bool IsEnemyInCombatCircle(Enemy enemy) => combatCircleEnemies.Contains(enemy);
+    public bool IsCombatCircleFull => combatCircleEnemies.All(enemy => enemy != null);
+
+    public void RemoveEnemyFromCombatCircle(Enemy enemy)
+    {
+        for (int i = 0; i < combatCircleEnemies.Length; i++)
+        {
+            if (combatCircleEnemies[i] != enemy) continue;
+
+            combatCircleEnemies[i] = null;
+            return;
+        }
+    }
+
+    public Vector2 GetPositionInCombatCircle(Enemy enemy)
+    {
+        int indexOfEnemy = -1;
+        for (int i = 0; i < combatCircleEnemies.Length; i++)
+        {
+            if (combatCircleEnemies[i] != enemy) continue;
+
+            indexOfEnemy = i;
+            break;
+        }
+
+        Vector2 relativeCirclePosition;
+        switch (indexOfEnemy)
+        {
+            // North
+            case 0:
+                relativeCirclePosition = UnitCirleNorth * combatCircleRadius;
+                break;
+            // Northeast
+            case 1:
+                relativeCirclePosition = UnitCircleNortheast * combatCircleRadius;
+                break;
+            // East
+            case 2:
+                relativeCirclePosition = UnitCircleEast * combatCircleRadius;
+                break;
+            // Southeast
+            case 3:
+                relativeCirclePosition = UnitCircleSoutheast * combatCircleRadius;
+                break;
+            // South
+            case 4:
+                relativeCirclePosition = UnitCircleSouth * combatCircleRadius;
+                break;
+            // Southwest
+            case 5:
+                relativeCirclePosition = UnitCircleSouthwest * combatCircleRadius;
+                break;
+            // West
+            case 6:
+                relativeCirclePosition = UnitCircleWest * combatCircleRadius;
+                break;
+            // Northwest
+            case 7:
+                relativeCirclePosition = UnitCircleNorthwest * combatCircleRadius;
+                break;
+            default:
+                throw new Exception("Enemy does not exist in the combat circle!");
+        }
+
+        relativeCirclePosition += new Vector2(transform.position.x, transform.position.y);
+        return relativeCirclePosition;
     }
 }

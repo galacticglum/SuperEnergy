@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 25950255}
   - component: {fileID: 25950256}
   - component: {fileID: 25950257}
-  - component: {fileID: 25950258}
+  - component: {fileID: 25950259}
   m_Layer: 0
   m_Name: _Body
   m_TagString: Untagged
@@ -206,8 +206,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!60 &25950258
-PolygonCollider2D:
+--- !u!58 &25950259
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
@@ -218,63 +218,9 @@ PolygonCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.305, y: 0.416}
-    oldSize: {x: 2.2357142, y: 1.4785714}
-    newSize: {x: 3.13, y: 2.07}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.77524996, y: -0.30794287}
-      - {x: 0.8538214, y: -0.37222856}
-      - {x: 0.9823929, y: -0.35794285}
-      - {x: 1.0323929, y: -0.28651428}
-      - {x: 1.1181072, y: -0.29365715}
-      - {x: 1.3038214, y: -0.27937144}
-      - {x: 1.3823929, y: -0.3008}
-      - {x: 1.42525, y: -0.25794286}
-      - {x: 1.42525, y: -0.2008}
-      - {x: 1.3895358, y: -0.17222857}
-      - {x: 1.2181072, y: -0.15794286}
-      - {x: 1.0395358, y: -0.15794286}
-      - {x: 0.93953574, y: -0.050799996}
-      - {x: 0.84667856, y: 0.1349143}
-      - {x: 0.8109643, y: 0.18491429}
-      - {x: 0.68239284, y: 0.29205716}
-      - {x: 0.5681071, y: 0.3349143}
-      - {x: 0.39667854, y: 0.37777144}
-      - {x: 0.31810713, y: 0.37777144}
-      - {x: 0.33953568, y: 0.4349143}
-      - {x: 0.2038214, y: 0.5706286}
-      - {x: 0.060964257, y: 0.5992}
-      - {x: -0.060464315, y: 0.5992}
-      - {x: -0.1461786, y: 0.55634284}
-      - {x: -0.33189288, y: 0.4492}
-      - {x: -0.38903573, y: 0.38491428}
-      - {x: -0.4318929, y: 0.2492}
-      - {x: -0.4318929, y: 0.12777144}
-      - {x: -0.38903573, y: 0.027771432}
-      - {x: -0.3604643, y: 0.006342861}
-      - {x: -0.4176072, y: -0.09365714}
-      - {x: -0.4318929, y: -0.24365714}
-      - {x: -0.4318929, y: -0.26508573}
-      - {x: -0.3604643, y: -0.38651428}
-      - {x: -0.25332147, y: -0.46508572}
-      - {x: -0.13903575, y: -0.49365714}
-      - {x: 0.07524997, y: -0.49365714}
-      - {x: 0.14667854, y: -0.48651427}
-      - {x: 0.42524996, y: -0.37937143}
-      - {x: 0.5395357, y: -0.35794285}
-      - {x: 0.6038214, y: -0.30794287}
-    - - {x: 0.4895357, y: -0.12222857}
-      - {x: 0.53239286, y: -0.072228566}
-      - {x: 0.52524996, y: -0.00079999655}
-      - {x: 0.7038214, y: -0.15794286}
+  m_Offset: {x: -0.0024734084, y: 0.04448415}
+  serializedVersion: 2
+  m_Radius: 0.51998746
 --- !u!1 &174993201
 GameObject:
   m_ObjectHideFlags: 0
@@ -2662,6 +2608,7 @@ MonoBehaviour:
   nozzleMarker: {fileID: 174993202}
   projectilePrefab: {fileID: 1134339338414476, guid: 937c1c816472e764794ec2b5a922f281,
     type: 2}
+  combatCircleRadius: 2
 --- !u!1001 &1159582313
 Prefab:
   m_ObjectHideFlags: 0
@@ -12819,7 +12766,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   data:
-    dataString: UEsDBBQAAAgIAACYn+tmcFTkRAIAANIEAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFlVMuS2jAQ/BVK55Ayr2U3twRYkgMLtSSViy+yNMYqZMmlx/Iq/j0j2WAvOSF6ZlrdMyNfiFC2Aua0WRrBV5oD+dYj4Uy+9AiNsXfqhEZ4gIiwugRnBPuudjLkJgh6JXJtygXfwUxbZxHOqbSAIaNdqFYIXXrkiD/9l1BywtNwGk5nPL0kvSseGSgHpk1Nvk6a1EE8hdQ60ysmaVkB34oztAXj0Y16EtMU+mkyai6mpRS20UPcqYp2t1UBBoJhLijaixqC2wLErnCBr1u7znMLrvFu6GkuDHapJiU/tCsCU0ntvhb2QaWHqOkpiqpJV//F+4MYzo0uf97uHSThDlcItn+nJ0at6/S2C88/C/fqQOWeZhL+FqDe9NJorzgGnfGh1FsYztu/d2uzAti+xWupD6CvOhNq+n0bZPBwje6PMynKLDZ+XANbqWO74/zB4Gh+oeC4HbahQDSo+GPhN91116gJvApjHYYalyrIy7Q3IZUsYs+CG+9m2iiIcCO6AkWlO22Qxj2O8CHWufYh8krDQ2kub2K3d/BQEuE2P0keQht9uA/LFvqwAlusvZNCQSs6BN6wTzOtVL1h3Z7cyrbe5JR1ynZe8M+rRXg2nWZsNH5mGX/KR3mfT8YwAMooheFg+sxJ3D2h0CeVm1po0x6cmmrJFe7Z7RPRWxpaxW3nhh6W4lzqTsuFyvWWGQC1rhnuwsHgJfgs+YILbNAWnBMqzptcUiI12wNP70RpdLo4OkPTliUllfjQLiApmcUPR0qu5PoPUEsDBBQAAAgIAACYn+uiZ/QUbQAAAHgAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNEz1DM001FQSi9KLMgoBooYgjilmSkgdrRSSpK5eVKysYlFclKKWZpxmm6KqUmqYWpicmJiqpGhuUWKUixQfUllQapfYm4qRE9AYklGWmZeSmZeup57UWaKO8hopdhaAFBLAQItABQAAAgIAACYn+tmcFTkRAIAANIEAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAACYn+uiZ/QUbQAAAHgAAAAJACQAAAAAAAAAAAAAAJECAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAASQMAAAAA
+    dataString: UEsDBBQAAAgIAACYn+vTpDJjRwIAANQEAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFlVMuSmzAQ/BWXznEK/Fjv5pZgr5OD1671pnLhIqTBqCwkShLrV/nfMxLYEOeE6J4Z9fQMXIhQtgLmtFkawVeaA/k2IP5MvgwIDdw7dUIjHCMirC7BGcG+q530sRGCtRK5NuWC7yDR1lmEcyotIGW089kKocuAHPExfPEpJzyNZv50xtNLNLjikYFyYLrQ6Ou0DY3DyYc2kbVikpYV8K04Q5cwGd9KT0OYwn7aiKYW01IK2+oh7lSFdrdVAQZ8w1xQbC9oGIWEAsSucP61n73Ocwuu7d7Q01wY9KkpS35oV/haJbX7RtonlTUEVU9BVlN09R8/jAOdG13+vN0bR/4OVwi2f6cnRq3ruduH5530ODh0oHJPMwl/ClBveml0rTiSztQ+tbYwmnev99aSAti+wxupD2Bd9WbUOn4bpe/hGro/JlKUWbB+0gBbqYPhYQPA4HB+oeCwH7YtgahX8dvCB931F6klXoWxDqm2S+XlZbo2PpQsgme+m9ol2igIcCu6AkWlO22wjHsc4QPXu/aBeaX+U2kvb7nbl/CQEuAuPooeqI0+3IdlC31YgS3WtZNCQSfaE2/oU6KVajas78ktbVubnLJe2q4W/N/VIjybzTI2njyzjD/l43zIpxOIgTJKYRTPnjkJuycU9knlphHa2oNTU11xhXt2+0kMloZWYdu5oYelOJe6Z7lQud4yA6DWTYW7cDB4CX6YfMEFGrQF54QK8yaXlEjN9sDTe6E0dLo4OkPTrkpKKvGpnUdSkoRfR0qu5PoXUEsDBBQAAAgIAACYn+uiZ/QUbQAAAHgAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNEz1DM001FQSi9KLMgoBooYgjilmSkgdrRSSpK5eVKysYlFclKKWZpxmm6KqUmqYWpicmJiqpGhuUWKUixQfUllQapfYm4qRE9AYklGWmZeSmZeup57UWaKO8hopdhaAFBLAQItABQAAAgIAACYn+vTpDJjRwIAANQEAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAACYn+uiZ/QUbQAAAHgAAAAJACQAAAAAAAAAAAAAAJQCAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAATAMAAAAA
     upgradeData: 
     file_cachedStartup: {fileID: 0}
     data_cachedStartup: 
@@ -12832,7 +12779,7 @@ MonoBehaviour:
   manualDebugFloorRoof: 0
   showSearchTree: 0
   unwalkableNodeDebugSize: 0.3
-  logPathResults: 1
+  logPathResults: 0
   maxNearestNodeDistance: 100
   scanOnStartup: 1
   fullGetNearestSearch: 0

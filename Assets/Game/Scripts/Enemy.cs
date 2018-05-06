@@ -1,4 +1,5 @@
-﻿using Pathfinding;
+﻿using System;
+using Pathfinding;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
@@ -44,19 +45,39 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
-        aiPath.destination = playerController.transform.position;
+        if (playerController.IsCombatCircleFull && !playerController.IsEnemyInCombatCircle(this))
+        {
+            return;
+        }
 
-        Path path = seeker.GetCurrentPath();
-        if (currentWaypoint >= path.vectorPath.Count) return;
+        if (!playerController.IsCombatCircleFull && !playerController.IsEnemyInCombatCircle(this))
+        {
+            playerController.AddEnemyToCombatCircle(this);
+        }
 
-        Vector2 direction = path.vectorPath[currentWaypoint] - transform.position;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        aiPath.destination = playerController.GetPositionInCombatCircle(this);
 
-        if (Vector3.Distance(transform.position, path.vectorPath[currentWaypoint]) < MaxWaypointDistance)
+        Path currentPath = seeker.GetCurrentPath();
+        if (currentPath == null) return;
+        if (currentWaypoint >= currentPath.vectorPath.Count)
+        {
+            RotateTo(playerController.transform.position);
+            return;
+        }
+
+        RotateTo(currentPath.vectorPath[currentWaypoint]);
+
+        if (Vector3.Distance(transform.position, currentPath.vectorPath[currentWaypoint]) < MaxWaypointDistance)
         {
             currentWaypoint++;
         }
+    }
+
+    private void RotateTo(Vector3 target)
+    {
+        Vector2 direction = target - transform.position;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
     public void TakeDamage(float damage)
@@ -64,6 +85,7 @@ public class Enemy : MonoBehaviour
         health -= damage;
         if (health <= 0)
         {
+            playerController.RemoveEnemyFromCombatCircle(this);
             Destroy(gameObject);
         }
 
