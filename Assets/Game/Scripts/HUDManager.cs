@@ -32,6 +32,7 @@ public class HUDManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.M))
             {
+                SceneManager.LoadScene(0);
             }
             else if(Input.GetKeyDown(KeyCode.Space))
             {

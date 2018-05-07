@@ -18,6 +18,6 @@ public class ShadowText : MonoBehaviour
 
     private void Update()
     {
-        shadow.effectDistance = new Vector2(Mathf.PingPong(Time.time * 2, end - start) + start, -1);
+        shadow.effectDistance = new Vector2(Mathf.PingPong(Time.time * 2, end - start) + start, shadow.effectDistance.y);
     }
 }
