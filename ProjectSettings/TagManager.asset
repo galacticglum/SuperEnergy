@@ -52,6 +52,9 @@ TagManager:
   - name: Projectile
     uniqueID: 1273092145
     locked: 0
+  - name: Powerup
+    uniqueID: 138400389
+    locked: 0
   - name: Player
     uniqueID: 4184900177
     locked: 0

@@ -9,7 +9,7 @@ public class Enemy : MonoBehaviour
 
     public bool IsAttacking { get; set; }
     public float AttackWaitTime { get; set; }
-    public float Damage => damage;
+    public float Damage => Random.Range(minimumDamage, maximumDamage);
 
     [SerializeField]
     private float speed = 2;
@@ -18,7 +18,9 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private float minimumEngagementDistance = 10;
     [SerializeField]
-    private float damage = 10;
+    private int minimumDamage = 5;
+    [SerializeField]
+    private int maximumDamage = 10;
     [SerializeField]
     private float maxHealth = 100;
     [SerializeField]

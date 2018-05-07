@@ -10,8 +10,23 @@ public struct SpawnPoint
     public float Weight;
 }
 
+public delegate void SpawnControllerEventHandler(object sender, SpawnControllerEventArgs args);
+public class SpawnControllerEventArgs : EventArgs
+{
+    public SpawnController SpawnController { get; }
+    public SpawnControllerEventArgs(SpawnController spawnController)
+    {
+        SpawnController = spawnController;
+    }
+}
+
 public class SpawnController : MonoBehaviour
 {
+    public static SpawnController Current { get; private set; }
+
+    public event SpawnControllerEventHandler NewWaveStarted;
+    public event SpawnControllerEventHandler CurrentWaveEnded;
+
     [SerializeField]
     private PlayerController playerController;
     [SerializeField]
@@ -28,8 +43,9 @@ public class SpawnController : MonoBehaviour
     private float timeUntilNextWave;
     private float timeUntilNextSpawn = 1;
 
-    private void Start()
+    private void OnEnable()
     {
+        Current = this;
         spawnParent = new GameObject("Spawn_Parent");
         timeUntilNextWave = timeBetweenWave;
     }
@@ -41,7 +57,7 @@ public class SpawnController : MonoBehaviour
         {
             if (isCurrentlyWave)
             {
-                Debug.Log("Wave ended");
+                CurrentWaveEnded?.Invoke(this, new SpawnControllerEventArgs(this));
                 timeUntilNextWave = timeBetweenWave;
                 isCurrentlyWave = false;
             }
@@ -51,7 +67,7 @@ public class SpawnController : MonoBehaviour
 
             currentWaveSize = Random.Range(GetNewMinWave(), GetNewMaxWave());
             isCurrentlyWave = true;
-            Debug.Log("Wave started");
+            NewWaveStarted?.Invoke(this, new SpawnControllerEventArgs(this));
         }
 
         if (!isCurrentlyWave || currentWaveSize == 0) return;

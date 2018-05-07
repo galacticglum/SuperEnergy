@@ -5,21 +5,25 @@ public class Socket : MonoBehaviour
     [SerializeField]
     private PlayerController playerController;
     [SerializeField]
-    private float range = 10;
+    private float defaultRange = 10;
     [SerializeField]
     private GameObject rangeCircle;
     [SerializeField]
     private float rangeCircleRotationSpeed = 80;
+    private float range;
+
     private bool pluggedIn;
 
     private void Start()
     {
-        rangeCircle.transform.localScale = new Vector3(range / transform.localScale.x, range / transform.localScale.y, 0) * 2;
         rangeCircle.SetActive(false);
     }
 
     private void Update()
     {
+        range = PowerupManager.Current.IsPowerupActive(PowerupType.MegaRange) ? defaultRange * 1.5f : defaultRange;
+        rangeCircle.transform.localScale = new Vector3(range / transform.localScale.x, range / transform.localScale.y, 0) * 2;
+
         if (pluggedIn)
         {
             rangeCircle.transform.Rotate(0, 0, rangeCircleRotationSpeed * Time.deltaTime);

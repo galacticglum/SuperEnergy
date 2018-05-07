@@ -90,7 +90,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float maxHealth = 100;
     [SerializeField]
-    private float fireRate = 0.5f;
+    private float defaultFireRate = 0.5f;
     [SerializeField]
     private float projectileSpeed = 10f;
     [SerializeField]
@@ -99,7 +99,8 @@ public class PlayerController : MonoBehaviour
     private GameObject projectilePrefab;
     [SerializeField]
     private float combatCircleRadius = 2;
-
+    private float fireRate;
+    
     private float currentHealth;
     private float timeSinceLastFire;
     private Vector3 velocity;
@@ -121,16 +122,18 @@ public class PlayerController : MonoBehaviour
         CanShoot = false;
 
         InvokeRepeating(nameof(HandleEnemyAttack), 0, 1.5f);
+        fireRate = defaultFireRate;
     }
 
     private void Update()
     {
+        fireRate = PowerupManager.Current.IsPowerupActive(PowerupType.RapidFire) ? defaultFireRate / 2f : defaultFireRate;
         if (Time.time > lastTakeDamageTime + 0.05f && spriteRenderer.color != Color.white)
         {
             spriteRenderer.color = Color.white;
         }
 
-        if (CanShoot && Input.GetKey(KeyCode.Mouse0))
+        if ((CanShoot || PowerupManager.Current.IsPowerupActive(PowerupType.BatteryPack)) && Input.GetKey(KeyCode.Mouse0))
         {
             FireProjectile();
         }
@@ -193,7 +196,6 @@ public class PlayerController : MonoBehaviour
         if (currentHealth <= 0)
         {
             Debug.Log("Game over");
-            //Destroy(gameObject);
         }
 
         OnPlayerHealthChanged(new PlayerHealthChangedEventArgs(this, currentHealth + amount, currentHealth));
@@ -227,6 +229,7 @@ public class PlayerController : MonoBehaviour
 
     private void FireProjectile()
     {
+        
         if (Time.time <= fireRate + timeSinceLastFire) return;
         Vector3 projectileVelocity = nozzleMarker.right * projectileSpeed;
 
