@@ -142,7 +142,7 @@ public class PlayerController : MonoBehaviour
         Enemy[] enemies = combatCircleEnemies.OrderBy(x => Random.value).ToArray();
         foreach (Enemy enemy in enemies)
         {
-            if (enemy == null || Vector2.Distance(enemy.transform.position, transform.position) > combatCircleRadius) continue;
+            if (enemy == null || Vector2.Distance(enemy.transform.position, transform.position) > combatCircleRadius * 1.6f) continue;
             float waitTime = Random.Range(0.1f, 0.2f);
             StartCoroutine(EnemyAttack(enemy, waitTime));
         }

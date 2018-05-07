@@ -23,12 +23,18 @@ public class PointsText : MonoBehaviour
     private void OnPlayerPointsChanged(object sender, PlayerPointsChangedEventArgs args)
     {
         StartCoroutine(TransitionText(args.OldPoints, args.NewPoints));
-        float newWidth = GetLengthOfPointsText(string.Format(format, args.NewPoints)) + 5;
-        if (newWidth < 10)
+
+        float newWidth = GetLengthOfPointsText($"{args.NewPoints} pts") + 40;
+        if (args.NewPoints < 99)
+        {
+            newWidth = 50;
+        }
+
+        if (newWidth < 20)
         {
             newWidth = backgroundImage.rectTransform.sizeDelta.x;
         }
-
+    
         backgroundImage.rectTransform.sizeDelta = new Vector2(newWidth, backgroundImage.rectTransform.sizeDelta.y);
     }
 
@@ -50,7 +56,6 @@ public class PointsText : MonoBehaviour
         }
     }
 
-    private int GetLengthOfPointsText() => GetLengthOfPointsText(pointTextLabel.text);
     private int GetLengthOfPointsText(string message)
     {
         int totalLength = 0;
