@@ -75,6 +75,11 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
+        if (playerController.IsGameover)
+        {
+            Destroy(gameObject, 1);
+        }
+
         if (Time.time > lastTakeDamageTime + 0.05f && spriteRenderer.color != Color.white)
         {
             spriteRenderer.color = Color.white;

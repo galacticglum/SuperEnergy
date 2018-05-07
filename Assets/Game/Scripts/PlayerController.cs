@@ -63,6 +63,8 @@ public class PlayerController : MonoBehaviour
             OnPlayerPointsChanged(new PlayerPointsChangedEventArgs(this, oldPoints, points));
         }
     }
+
+    public bool IsGameover { get; private set; }
     public float MaxHealth => maxHealth;
     public bool CanShoot { get; set; }
 
@@ -137,6 +139,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (IsGameover) return;
+
         fireRate = PowerupManager.Current.IsPowerupActive(PowerupType.RapidFire) ? defaultFireRate / 2f : defaultFireRate;
         if (Time.time > lastTakeDamageTime + 0.05f && spriteRenderer.color != Color.white)
         {
@@ -155,7 +159,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleEnemyAttack()
     {
-        if (IsCombatCircleEmpty) return;
+        if (IsCombatCircleEmpty || IsGameover) return;
         Enemy[] enemies = combatCircleEnemies.OrderBy(x => Random.value).ToArray();
         foreach (Enemy enemy in enemies)
         {
@@ -212,13 +216,15 @@ public class PlayerController : MonoBehaviour
         if (amount == 0) return;
 
         currentHealth -= amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, MaxHealth);
+
         if (currentHealth <= 0)
         {
-            Debug.Log("Game over");
+            IsGameover = true;
         }
 
         OnPlayerHealthChanged(new PlayerHealthChangedEventArgs(this, currentHealth + amount, currentHealth));
-        if (amount > 0) return;
+        if (amount < 0) return;
         CameraShakeAgent.Create(Camera.main, 0.1f, 0.1f);
         spriteRenderer.color = HurtColourTint;
         lastTakeDamageTime = Time.time;
@@ -231,6 +237,8 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (IsGameover) return;
+
         float horizontalAxis = Input.GetAxisRaw("Horizontal");
         float verticalAxis = Input.GetAxisRaw("Vertical");
 

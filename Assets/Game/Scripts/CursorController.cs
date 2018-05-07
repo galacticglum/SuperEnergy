@@ -24,6 +24,7 @@ public class CursorController : MonoBehaviour
 
     private void Update()
     {
+        if (playerController.IsGameover) return;
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             LockCursor();
