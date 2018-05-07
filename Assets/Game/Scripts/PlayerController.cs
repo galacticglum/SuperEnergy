@@ -5,6 +5,21 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+public delegate void PlayerHealthChangedEventHandler(object sender, PlayerHealthChangedEventArgs args);
+public class PlayerHealthChangedEventArgs : EventArgs
+{
+    public PlayerController PlayerController { get; }
+    public float OldHealth { get; }
+    public float NewHealth { get; }
+
+    public PlayerHealthChangedEventArgs(PlayerController playerController, float oldHealth, float newHealth)
+    {
+        PlayerController = playerController;
+        OldHealth = oldHealth;
+        NewHealth = newHealth;
+    }
+}
+
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
@@ -20,7 +35,11 @@ public class PlayerController : MonoBehaviour
     private static readonly Vector2 UnitCircleWest = new Vector2(-1, 0);
     private static readonly Vector2 UnitCircleNorthwest = new Vector2(-0.707106781f, 0.707106781f);
 
+    public float MaxHealth => maxHealth;
     public bool CanShoot { get; set; }
+
+    public event PlayerHealthChangedEventHandler PlayerHealthChanged;
+    private void OnPlayerHealthChanged(PlayerHealthChangedEventArgs args) => PlayerHealthChanged?.Invoke(this, args);
 
     [Header("Locomotion Settings")]
     [SerializeField]
@@ -124,6 +143,7 @@ public class PlayerController : MonoBehaviour
 
         TakeDamage(enemy.Damage);
 
+        elapsedTime = 0;
         while (elapsedTime < transitionTime)
         {
             enemy.transform.position = Vector2.Lerp(newPosition, originalPosition, elapsedTime / transitionTime);
@@ -136,6 +156,8 @@ public class PlayerController : MonoBehaviour
 
     private void TakeDamage(float amount)
     {
+        if (amount == 0) return;
+
         currentHealth -= amount;
         if (currentHealth <= 0)
         {
@@ -143,6 +165,8 @@ public class PlayerController : MonoBehaviour
             //Destroy(gameObject);
         }
 
+        OnPlayerHealthChanged(new PlayerHealthChangedEventArgs(this, currentHealth + amount, currentHealth));
+        CameraShakeAgent.Create(Camera.main, 0.1f, 0.1f);
         spriteRenderer.color = HurtColourTint;
         lastTakeDamageTime = Time.time;
     }

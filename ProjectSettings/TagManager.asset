@@ -15,7 +15,7 @@ TagManager:
   - UI
   - 
   - 
-  - LightObstacles
+  - Tilemap
   - Enemy
   - Bullet
   - LightSources
