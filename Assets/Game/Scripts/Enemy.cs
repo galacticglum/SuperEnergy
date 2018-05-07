@@ -10,6 +10,7 @@ public class Enemy : MonoBehaviour
     public bool IsAttacking { get; set; }
     public float AttackWaitTime { get; set; }
     public float Damage => Random.Range(minimumDamage, maximumDamage);
+    public AudioClip AttackAudioClip => attackAudioClip;
 
     [SerializeField]
     private float speed = 2;
@@ -25,6 +26,9 @@ public class Enemy : MonoBehaviour
     private float maxHealth = 100;
     [SerializeField]
     private EnemyHealthBar healthBar;
+
+    [SerializeField]
+    private AudioClip attackAudioClip;
 
     private static readonly Color HurtColourTint = new Color(1, 0.55f, 0.55f);
 

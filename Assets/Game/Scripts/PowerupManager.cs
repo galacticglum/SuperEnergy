@@ -8,6 +8,13 @@ public class PowerupManager : MonoBehaviour
     public static PowerupManager Current { get; private set; }
 
     [SerializeField]
+    private PlayerController playerController;
+    [SerializeField]
+    private AudioSource audioSource;
+    [SerializeField]
+    private AudioClip powerupAudioClip;
+
+    [SerializeField]
     private GameObject powerupUiRoot;
     [SerializeField]
     private GameObject powerupItemPrefab;
@@ -24,12 +31,20 @@ public class PowerupManager : MonoBehaviour
     {
         if (activePowerups.Contains(type)) return;
 
+        if (type == PowerupType.HealthPack)
+        {
+            playerController.AddHealth(20);
+        }
+
+        audioSource.PlayOneShot(powerupAudioClip);
+
+        if (time == 0) return;
+
         GameObject powerupIconGameObject = Instantiate(powerupItemPrefab);
         powerupIconGameObject.GetComponent<Image>().sprite = powerupIcon;
         powerupIconGameObject.transform.SetParent(powerupUiRoot.transform, false);
 
         StartCoroutine(StartPowerupCooldown(type, time, powerupIconGameObject));
-
         activePowerups.Add(type);
     }
 

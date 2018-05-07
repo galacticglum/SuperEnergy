@@ -106,6 +106,16 @@ public class PlayerController : MonoBehaviour
     private Vector3 velocity;
     private new Rigidbody2D rigidbody2D;
 
+    [Header("Audio")]
+    [SerializeField]
+    private AudioSource footstepAudioSource;
+    [SerializeField]
+    private AudioSource shootAudioSource;
+    [SerializeField]
+    private AudioClip footstepAudioClip;
+    [SerializeField]
+    private AudioClip shootAudioClip;
+
     [SerializeField]
     private SpriteRenderer spriteRenderer;
 
@@ -133,9 +143,13 @@ public class PlayerController : MonoBehaviour
             spriteRenderer.color = Color.white;
         }
 
-        if ((CanShoot || PowerupManager.Current.IsPowerupActive(PowerupType.BatteryPack)) && Input.GetKey(KeyCode.Mouse0))
+        if (!CanShoot && !PowerupManager.Current.IsPowerupActive(PowerupType.BatteryPack) ||
+            !Input.GetKey(KeyCode.Mouse0)) return;
+
+        FireProjectile();
+        if (!shootAudioSource.isPlaying)
         {
-            FireProjectile();
+            shootAudioSource.PlayOneShot(shootAudioClip);
         }
     }
 
@@ -159,6 +173,11 @@ public class PlayerController : MonoBehaviour
         if (enemy == null || enemy.CurrentHealth == 0)
         {
             yield break;
+        }
+
+        if (!AudioController.Current.AudioSource.isPlaying)
+        {
+            AudioController.Current.AudioSource.PlayOneShot(enemy.AttackAudioClip);
         }
 
         enemy.IsAttacking = true;
@@ -199,9 +218,15 @@ public class PlayerController : MonoBehaviour
         }
 
         OnPlayerHealthChanged(new PlayerHealthChangedEventArgs(this, currentHealth + amount, currentHealth));
+        if (amount > 0) return;
         CameraShakeAgent.Create(Camera.main, 0.1f, 0.1f);
         spriteRenderer.color = HurtColourTint;
         lastTakeDamageTime = Time.time;
+    }
+
+    public void AddHealth(float amount)
+    {
+        TakeDamage(-amount);
     }
 
     private void FixedUpdate()
@@ -220,6 +245,13 @@ public class PlayerController : MonoBehaviour
         {
             moveValue = 1;
             velocity = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"), 0).normalized * speed;
+
+            if (!footstepAudioSource.isPlaying)
+            {
+                footstepAudioSource.clip = footstepAudioClip;
+                footstepAudioSource.pitch = Random.Range(0.6f, 0.8f);
+                footstepAudioSource.Play();
+            }
         }
 
         animator.SetFloat("Move", moveValue);
@@ -228,8 +260,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private void FireProjectile()
-    {
-        
+    {   
         if (Time.time <= fireRate + timeSinceLastFire) return;
         Vector3 projectileVelocity = nozzleMarker.right * projectileSpeed;
 
