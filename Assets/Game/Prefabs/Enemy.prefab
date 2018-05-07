@@ -280,7 +280,7 @@ MonoBehaviour:
   speed: 2
   maxWaypointDistance: 2
   minimumEngagementDistance: 10
-  damage: 10
+  damage: 5
   maxHealth: 100
   healthBar: {fileID: 114575106409144200}
 --- !u!114 &114987154132250232

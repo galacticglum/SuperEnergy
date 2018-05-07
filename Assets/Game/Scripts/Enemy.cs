@@ -165,6 +165,7 @@ public class Enemy : MonoBehaviour
                 StopCoroutine(playerController.EnemyAttack(this, AttackWaitTime));
             }
 
+            playerController.Points += Random.Range(100, 150);
             Destroy(gameObject);
         }
 

@@ -40,5 +40,16 @@ public class PlayerHealthBar : MonoBehaviour
 
             yield return new WaitForEndOfFrame();
         }
+
+        elapsedTime = 0;
+
+        const float transitionOutTime = 0.05f;
+        while (elapsedTime < transitionOutTime)
+        {
+            backingHealthBarSlider.value = Mathf.Lerp(backingHealthBarSlider.value, destination, elapsedTime / transitionOutTime);
+            elapsedTime += Time.deltaTime;
+
+            yield return new WaitForEndOfFrame();
+        }
     }
 }

@@ -20,6 +20,21 @@ public class PlayerHealthChangedEventArgs : EventArgs
     }
 }
 
+public delegate void PlayerPointsChangedEventHandler(object sender, PlayerPointsChangedEventArgs args);
+public class PlayerPointsChangedEventArgs : EventArgs
+{
+    public PlayerController PlayerController { get; }
+    public int OldPoints { get; }
+    public int NewPoints { get; }
+
+    public PlayerPointsChangedEventArgs(PlayerController playerController, int oldPoints, int newPoints)
+    {
+        PlayerController = playerController;
+        OldPoints = oldPoints;
+        NewPoints = newPoints;
+    }
+}
+
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
@@ -35,11 +50,27 @@ public class PlayerController : MonoBehaviour
     private static readonly Vector2 UnitCircleWest = new Vector2(-1, 0);
     private static readonly Vector2 UnitCircleNorthwest = new Vector2(-0.707106781f, 0.707106781f);
 
+    private int points;
+    public int Points
+    {
+        get { return points; }
+        set
+        {
+            if (points == value) return;
+            int oldPoints = points;
+            points = value;
+
+            OnPlayerPointsChanged(new PlayerPointsChangedEventArgs(this, oldPoints, points));
+        }
+    }
     public float MaxHealth => maxHealth;
     public bool CanShoot { get; set; }
 
     public event PlayerHealthChangedEventHandler PlayerHealthChanged;
     private void OnPlayerHealthChanged(PlayerHealthChangedEventArgs args) => PlayerHealthChanged?.Invoke(this, args);
+
+    public event PlayerPointsChangedEventHandler PlayerPointsChanged;
+    private void OnPlayerPointsChanged(PlayerPointsChangedEventArgs args) => PlayerPointsChanged?.Invoke(this, args);
 
     [Header("Locomotion Settings")]
     [SerializeField]
@@ -111,7 +142,7 @@ public class PlayerController : MonoBehaviour
         Enemy[] enemies = combatCircleEnemies.OrderBy(x => Random.value).ToArray();
         foreach (Enemy enemy in enemies)
         {
-            if (enemy == null || Vector2.Distance(enemy.transform.position, transform.position) > combatCircleRadius * 1.6f) continue;
+            if (enemy == null || Vector2.Distance(enemy.transform.position, transform.position) > combatCircleRadius) continue;
             float waitTime = Random.Range(0.1f, 0.2f);
             StartCoroutine(EnemyAttack(enemy, waitTime));
         }
