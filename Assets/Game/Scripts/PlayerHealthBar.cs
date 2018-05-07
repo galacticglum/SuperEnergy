@@ -10,6 +10,9 @@ public class PlayerHealthBar : MonoBehaviour
     private PlayerController playerController;
     [SerializeField]
     private Slider backingHealthBarSlider;
+    [SerializeField]
+    private Text healthbarText;
+
     private Slider healthBarSlider;
 
     private void Start()
@@ -31,6 +34,7 @@ public class PlayerHealthBar : MonoBehaviour
 
         while (elapsedTime < transitionInTime)
         {
+            healthbarText.text = $"{Mathf.Floor(healthBarSlider.value * 100)} / {playerController.MaxHealth}";
             healthBarSlider.value = Mathf.Lerp(healthBarSlider.value, destination, elapsedTime / transitionInTime);
             elapsedTime += Time.deltaTime;
 
