@@ -1,7 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
+public struct PowerupHandle
+{
+    public PowerupType Type { get; }
+    public float Duration { get; }
+    public GameObject IconGameObject { get; }
+
+    public PowerupHandle(PowerupType type, float duration, GameObject iconGameObject)
+    {
+        Type = type;
+        Duration = duration;
+        IconGameObject = iconGameObject;
+    }
+}
 
 public class PowerupManager : MonoBehaviour
 {
@@ -19,50 +32,72 @@ public class PowerupManager : MonoBehaviour
     [SerializeField]
     private GameObject powerupItemPrefab;
 
-    private HashSet<PowerupType> activePowerups;
+    private Dictionary<PowerupType, Queue<PowerupHandle>> powerupQueue;
+    private Dictionary<PowerupType, bool> activePowerups;
 
     private void Start()
     {
         Current = this;
-        activePowerups = new HashSet<PowerupType>();
+        powerupQueue = new Dictionary<PowerupType, Queue<PowerupHandle>>();
+        activePowerups = new Dictionary<PowerupType, bool>();
     }
 
-    public void UsePowerup(PowerupType type, float time, Sprite powerupIcon)
+    private void Update()
     {
-        if (activePowerups.Contains(type)) return;
+        foreach (PowerupType type in powerupQueue.Keys)
+        {
+            if ((!activePowerups.ContainsKey(type) || activePowerups.ContainsKey(type) && !activePowerups[type]) && powerupQueue[type].Count > 0)
+            {
+                PowerupHandle activePowerupHandle = powerupQueue[type].Dequeue();
+                PowerupIconInstance powerupIconInstance = activePowerupHandle.IconGameObject.AddComponent<PowerupIconInstance>();
+                powerupIconInstance.Initialize(activePowerupHandle);
+                activePowerups[type] = true;
+            }
+        }
+    }
 
+    public void AddPowerup(PowerupType type, float time, Sprite powerupIcon)
+    {
         if (type == PowerupType.HealthPack)
         {
             playerController.AddHealth(20);
         }
 
         audioSource.PlayOneShot(powerupAudioClip);
-
         if (time == 0) return;
 
         GameObject powerupIconGameObject = Instantiate(powerupItemPrefab);
         powerupIconGameObject.GetComponent<Image>().sprite = powerupIcon;
         powerupIconGameObject.transform.SetParent(powerupUiRoot.transform, false);
 
-        StartCoroutine(StartPowerupCooldown(type, time, powerupIconGameObject));
-        activePowerups.Add(type);
-    }
-
-    private IEnumerator StartPowerupCooldown(PowerupType type, float time, GameObject powerupIconGameObject)
-    {
-        Slider slider = powerupIconGameObject.transform.GetChild(0).GetComponent<Slider>();
-        float elapsedTime = 0;
-
-        while (elapsedTime < time)
+        if (!powerupQueue.ContainsKey(type))
         {
-            slider.value = Mathf.Lerp(1, 0, elapsedTime / time);
-            elapsedTime += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
+            powerupQueue[type] = new Queue<PowerupHandle>();
         }
 
-        Destroy(powerupIconGameObject);
-        activePowerups.Remove(type);
+        powerupQueue[type].Enqueue(new PowerupHandle(type, time, powerupIconGameObject));
     }
 
-    public bool IsPowerupActive(PowerupType type) => activePowerups.Contains(type);
+    public void RemovePowerup(PowerupType type)
+    {
+        activePowerups[type] = false;
+    }
+
+    //private IEnumerator StartPowerupCooldown(PowerupType type, float time, GameObject powerupIconGameObject)
+    //{
+    //    Slider slider = powerupIconGameObject.transform.Find("Timer").GetComponent<Slider>();
+    //    float elapsedTime = 0;
+
+    //    while (elapsedTime < time)
+    //    {
+    //        slider.value = Mathf.Lerp(1, 0, elapsedTime / time);
+    //        elapsedTime += Time.deltaTime;
+    //        yield return new WaitForEndOfFrame();
+    //    }
+
+    //    Destroy(powerupIconGameObject);
+    //    powerupQueue.Remove(type);
+    //}
+
+    public bool IsPowerupActive(PowerupType type) => activePowerups.ContainsKey(type) && activePowerups[type];
 }

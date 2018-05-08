@@ -26,8 +26,8 @@ public class Powerup : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.gameObject.CompareTag("Player") || PowerupManager.Current.IsPowerupActive(type)) return;
-        PowerupManager.Current.UsePowerup(type, time, spriteRenderer.sprite);
+        if (!other.gameObject.CompareTag("Player")) return;
+        PowerupManager.Current.AddPowerup(type, time, spriteRenderer.sprite);
 
         SetEnabled(false);
     }
