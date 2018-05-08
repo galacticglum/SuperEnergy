@@ -68,6 +68,7 @@ public class SpawnController : MonoBehaviour
             currentWaveSize = Random.Range(GetNewMinWave(), GetNewMaxWave());
             isCurrentlyWave = true;
             NewWaveStarted?.Invoke(this, new SpawnControllerEventArgs(this));
+            timeUntilNextSpawn = 0;
         }
 
         if (!isCurrentlyWave || currentWaveSize == 0) return;
@@ -171,7 +172,7 @@ public class SpawnController : MonoBehaviour
             return 1;
         }
 
-        return Time.time < 20.0f ? 2 : 3;
+        return Time.time < 20.0f ? 2 : 3 + currentWaveSize;
     }
 
     private int GetNewMaxWave()
@@ -191,7 +192,7 @@ public class SpawnController : MonoBehaviour
             return 6;
         }
 
-        return Time.time < 30.0f ? 8 : 12;
+        return Time.time < 30.0f ? 8 : 12 + Mathf.FloorToInt(currentWaveSize * 1.2f);
     }
 
     private int GetRandomSpawnLocation()

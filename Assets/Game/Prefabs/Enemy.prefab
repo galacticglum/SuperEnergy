@@ -277,11 +277,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd06305b76cecd44b9173fb695eda0af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
+  speed: 4
   maxWaypointDistance: 2
-  minimumEngagementDistance: 10
+  minimumEngagementDistance: 15
   minimumDamage: 5
-  maximumDamage: 10
+  maximumDamage: 15
   maxHealth: 100
   healthBar: {fileID: 114575106409144200}
   attackAudioClip: {fileID: 8300000, guid: ce2bd5b947c43ee4aaec5ea15c00b6f8, type: 3}
