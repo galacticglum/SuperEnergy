@@ -34,7 +34,7 @@ public class PlayerHealthBar : MonoBehaviour
 
         while (elapsedTime < transitionInTime)
         {
-            healthbarText.text = $"{Mathf.Floor(healthBarSlider.value * 100)} / {playerController.MaxHealth}";
+            healthbarText.text = $"{Mathf.RoundToInt(healthBarSlider.value * 100)} / {playerController.MaxHealth}";
             healthBarSlider.value = Mathf.Lerp(healthBarSlider.value, destination, elapsedTime / transitionInTime);
             elapsedTime += Time.deltaTime;
 
