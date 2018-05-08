@@ -83,21 +83,5 @@ public class PowerupManager : MonoBehaviour
         activePowerups[type] = false;
     }
 
-    //private IEnumerator StartPowerupCooldown(PowerupType type, float time, GameObject powerupIconGameObject)
-    //{
-    //    Slider slider = powerupIconGameObject.transform.Find("Timer").GetComponent<Slider>();
-    //    float elapsedTime = 0;
-
-    //    while (elapsedTime < time)
-    //    {
-    //        slider.value = Mathf.Lerp(1, 0, elapsedTime / time);
-    //        elapsedTime += Time.deltaTime;
-    //        yield return new WaitForEndOfFrame();
-    //    }
-
-    //    Destroy(powerupIconGameObject);
-    //    powerupQueue.Remove(type);
-    //}
-
     public bool IsPowerupActive(PowerupType type) => activePowerups.ContainsKey(type) && activePowerups[type];
 }
