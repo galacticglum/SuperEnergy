@@ -46,13 +46,13 @@ public class PowerupManager : MonoBehaviour
     {
         foreach (PowerupType type in powerupQueue.Keys)
         {
-            if ((!activePowerups.ContainsKey(type) || activePowerups.ContainsKey(type) && !activePowerups[type]) && powerupQueue[type].Count > 0)
-            {
-                PowerupHandle activePowerupHandle = powerupQueue[type].Dequeue();
-                PowerupIconInstance powerupIconInstance = activePowerupHandle.IconGameObject.AddComponent<PowerupIconInstance>();
-                powerupIconInstance.Initialize(activePowerupHandle);
-                activePowerups[type] = true;
-            }
+            if (activePowerups.ContainsKey(type) && (!activePowerups.ContainsKey(type) || activePowerups[type]) ||
+                powerupQueue[type].Count <= 0) continue;
+
+            PowerupHandle activePowerupHandle = powerupQueue[type].Dequeue();
+            PowerupIconInstance powerupIconInstance = activePowerupHandle.IconGameObject.AddComponent<PowerupIconInstance>();
+            powerupIconInstance.Initialize(activePowerupHandle);
+            activePowerups[type] = true;
         }
     }
 
