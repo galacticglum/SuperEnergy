@@ -100,6 +100,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private GameObject projectilePrefab;
     [SerializeField]
+    private GameObject projectileImpactPrefab;
+    [SerializeField]
     private float combatCircleRadius = 2;
     private float fireRate;
     
@@ -276,7 +278,8 @@ public class PlayerController : MonoBehaviour
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
-        ProjectileInstance.Create(projectilePrefab, nozzleMarker.position + projectilePrefab.transform.localScale.x / 2f * nozzleMarker.right, rotation, projectileVelocity);
+        ProjectileInstance.Create(projectilePrefab, nozzleMarker.position + projectilePrefab.transform.localScale.x / 2f * nozzleMarker.right, rotation, 
+            projectileVelocity, projectileImpactPrefab);
 
         timeSinceLastFire = Time.time;
         animator.SetTrigger("Shoot");

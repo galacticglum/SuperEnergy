@@ -6,8 +6,9 @@ public class ProjectileInstance : MonoBehaviour
 
     private float spawnTime;
     private new Rigidbody2D rigidbody2D;
-    
-    private void Initialize(Vector3 velocity)
+    private GameObject impactPrefab;
+
+    private void Initialize(Vector3 velocity, GameObject impactPrefab)
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
         if (rigidbody2D == null)
@@ -19,6 +20,7 @@ public class ProjectileInstance : MonoBehaviour
         rigidbody2D.angularVelocity = 0;
 
         spawnTime = Time.time;
+        this.impactPrefab = impactPrefab;
     }
 
     private void Update()
@@ -38,15 +40,19 @@ public class ProjectileInstance : MonoBehaviour
         {
             other.gameObject.GetComponent<Enemy>().TakeDamage(PlayerController.WeaponDamage);
         }
+        else
+        {
+            Instantiate(impactPrefab, transform.position, Quaternion.identity);
+        }
 
         Destroy(gameObject);
     }
 
-    public static ProjectileInstance Create(GameObject prefab, Vector3 position, Quaternion rotation, Vector3 velocity)
+    public static ProjectileInstance Create(GameObject prefab, Vector3 position, Quaternion rotation, Vector3 velocity, GameObject impactPrefab)
     {
         GameObject projectileInstanceGameObject = Instantiate(prefab, position, rotation);
         ProjectileInstance instance = projectileInstanceGameObject.AddComponent<ProjectileInstance>();
-        instance.Initialize(velocity);
+        instance.Initialize(velocity, impactPrefab);
 
         return instance;
     }
